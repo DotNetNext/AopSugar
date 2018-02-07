@@ -41,13 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Code\Aspect\AuthenticatioFilter.cs" />
-    <Compile Include="App_Code\Aspect\ExceptionFilter.cs" />
-    <Compile Include="App_Code\Aspect\ActionFilter.cs" />
-    <Compile Include="App_Code\Aspect\LogFilter.cs" />
-    <Compile Include="App_Code\Impl\UserMamager.cs" />
-    <Compile Include="App_Code\Impl\IUserMamager.cs" />
-    <Compile Include="App_Code\Model\TestModel.cs" />
+    <Compile Include="App_Code\Filters\AuthenticatioFilter.cs" />
+    <Compile Include="App_Code\Filters\ExceptionFilter.cs" />
+    <Compile Include="App_Code\Filters\ActionFilter.cs" />
+    <Compile Include="App_Code\Filters\LogFilter.cs" />
+    <Compile Include="App_Code\BLL\UserMamager.cs" />
+    <Compile Include="App_Code\BLL\IUserMamager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
