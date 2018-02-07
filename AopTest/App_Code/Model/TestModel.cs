@@ -8,9 +8,9 @@ namespace AopTest
 {
     public class TestModel
     {
-        public IUser User { get; set; }
+        public IUserMamager User { get; set; }
 
-        public IUser AdminUser { get; set; }
+        public IUserMamager AdminUser { get; set; }
 
         public IDeptUser DeptUser { get; set; }
 

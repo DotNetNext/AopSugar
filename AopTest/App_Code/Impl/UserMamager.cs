@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AopTest
 {
-    public class User : IUser
+    public class UserMamager : IUserMamager
     {
 
         public string Version { get; set; }

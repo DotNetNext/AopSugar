@@ -11,3 +11,4 @@ C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\bin\Debug\AopTest.exe
 C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\bin\Debug\AopTest.pdb
 C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\obj\Debug\AopTest.exe
 C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\obj\Debug\AopTest.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\obj\Debug\AopTest.csprojResolveAssemblyReference.cache

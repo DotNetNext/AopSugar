@@ -45,12 +45,8 @@
     <Compile Include="App_Code\Aspect\ExceptionFilter.cs" />
     <Compile Include="App_Code\Aspect\ActionFilter.cs" />
     <Compile Include="App_Code\Aspect\LogFilter.cs" />
-    <Compile Include="App_Code\IDeptUser.cs" />
-    <Compile Include="App_Code\Impl\DeptUser.cs" />
-    <Compile Include="App_Code\Impl\Singleton.cs" />
-    <Compile Include="App_Code\Impl\User.cs" />
-    <Compile Include="App_Code\ISingleton.cs" />
-    <Compile Include="App_Code\IUser.cs" />
+    <Compile Include="App_Code\Impl\UserMamager.cs" />
+    <Compile Include="App_Code\Impl\IUserMamager.cs" />
     <Compile Include="App_Code\Model\TestModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

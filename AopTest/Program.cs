@@ -13,9 +13,9 @@ namespace AopTest
         {
             var factory = AssembleFactory.Instance;
  
-            factory.Bind<IUser>().To<User>();
-            var user = factory.CreateInstance<User>();
-            var iUser = factory.CreateInstance<IUser>();
+            factory.Bind<IUserMamager>().To<UserMamager>();
+            var user = factory.CreateInstance<UserMamager>();
+            var iUser = factory.CreateInstance<IUserMamager>();
 
 
             //下面开始一般拦截示例

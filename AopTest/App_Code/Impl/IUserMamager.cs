@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AopTest
 {
-    public interface IUser
+    public interface IUserMamager
     {
         string Name { get; set; }
 
