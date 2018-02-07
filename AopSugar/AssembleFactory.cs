@@ -654,12 +654,6 @@ namespace AopSugar
             il.Emit(OpCodes.Ret);
         }
 
-        private bool IsObjectMethod(MethodInfo method)
-        {
-            string[] arr = new string[] { "ToString", "GetType", "GetHashCode", "Equals" };
-            return arr.Contains(method.Name);
-        }
-
         private void ImplementMethodByInterface(TypeBuilder typeBuilder, FieldBuilder agent, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
             var pis = method.GetParameters();
@@ -1151,6 +1145,11 @@ namespace AopSugar
                 return name = name.ToLower().Trim();
 
             return string.Format("!!_{0}_{1}", type.FullName, type.Assembly.FullName);
+        }
+        private bool IsObjectMethod(MethodInfo method)
+        {
+            string[] arr = new string[] { "ToString", "GetType", "GetHashCode", "Equals" };
+            return arr.Contains(method.Name);
         }
     }
 }
