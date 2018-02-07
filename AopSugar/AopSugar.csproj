@@ -39,16 +39,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AspectAttribute.cs" />
-    <Compile Include="AspectContext.cs" />
-    <Compile Include="AssembleAttribute.cs" />
+    <Compile Include="Attributes\AspectAttribute.cs" />
+    <Compile Include="Attributes\AspectContext.cs" />
+    <Compile Include="Attributes\AssembleAttribute.cs" />
     <Compile Include="AssembleFactory.cs" />
-    <Compile Include="AuthenticationAttribute.cs" />
-    <Compile Include="ActionAttribute.cs" />
+    <Compile Include="Attributes\AuthenticationAttribute.cs" />
+    <Compile Include="Attributes\ActionAttribute.cs" />
     <Compile Include="BindElement.cs" />
     <Compile Include="BindExtension.cs" />
     <Compile Include="EmitHelper.cs" />
-    <Compile Include="ExceptionAttribute.cs" />
+    <Compile Include="Attributes\ExceptionAttribute.cs" />
     <Compile Include="PropertiesAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
