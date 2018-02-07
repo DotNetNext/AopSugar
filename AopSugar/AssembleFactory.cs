@@ -654,6 +654,7 @@ namespace AopSugar
             il.Emit(OpCodes.Ret);
         }
 
+        #region Helpers
         private void ImplementMethodByInterface(TypeBuilder typeBuilder, FieldBuilder agent, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
             var pis = method.GetParameters();
@@ -682,7 +683,7 @@ namespace AopSugar
             LocalBuilder obj_arr = null;
 
             //如果存在AOP标记，则开始初始化上下文对象
-            if (basicTypes != null || authType != null || exType != null) 
+            if (basicTypes != null || authType != null || exType != null)
                 context = InitializeAspectContext(il, paramTypes, ref obj_arr);
 
             //开始植入基本（执行前）的AOP代码
@@ -974,7 +975,8 @@ namespace AopSugar
 
         private void CallResult(ILGenerator il, MethodInfo method, ParameterInfo[] pis, Type[] paramTypes, LocalBuilder result, bool is_void)
         {
-            il.Emit(OpCodes.Ldarg_1); //加载类本身
+            il.Emit(OpCodes.Ldarg_0); //加载类本身
+            il.Emit(OpCodes.Ldfld); //加载代理成员
             //各个参数的入栈
             for (int i = 0; i < pis.Length; i++)
                 il.Emit(OpCodes.Ldarg, i + 1);
@@ -1150,6 +1152,7 @@ namespace AopSugar
         {
             string[] arr = new string[] { "ToString", "GetType", "GetHashCode", "Equals" };
             return arr.Contains(method.Name);
-        }
+        } 
+        #endregion
     }
 }
