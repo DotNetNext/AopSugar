@@ -419,7 +419,7 @@ namespace AopSugar
             //获取所有属性
             //PropertyInfo[] pis = GetAllPropeties(interfaces);
 
-            FieldBuilder[] members = null;
+            //FieldBuilder[] members = null;
             //nitializeMembers(typeBuilder, bindType, pis, ref agent, ref members);
 
             //识别AOP标记
