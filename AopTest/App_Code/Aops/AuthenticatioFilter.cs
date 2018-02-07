@@ -21,7 +21,7 @@ namespace AopTest
                 if (item == null)
                     return false;
             }
-            Console.WriteLine("执行验证过滤器");
+            Console.WriteLine("执行：验证过滤器");
             return true;
         }
     }

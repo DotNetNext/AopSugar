@@ -20,7 +20,7 @@ namespace AopTest
 
         public override void OnExecuted(AspectContext context)
         {
-            Console.WriteLine("执行日志记录");
+            Console.WriteLine("执行：日志记录");
             //var sw = context.Datas["sw"] as Stopwatch;
             //if (sw != null)
             //{

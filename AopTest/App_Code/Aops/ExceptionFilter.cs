@@ -15,7 +15,7 @@ namespace AopTest
     {
         public override void OnException(AspectContext context, Exception ex)
         {
-            Console.WriteLine("执行异常过滤器");
+            Console.WriteLine("执行：异常过滤器");
         }
     }
 }

@@ -15,7 +15,7 @@ namespace AopTest
     {
         public override void OnExecuting(AspectContext context)
         {
-            Console.WriteLine("执行方法前过滤器");
+            Console.WriteLine("执行：方法前过滤器");
             //Console.WriteLine("args:");
 
             //foreach (var item in context.Args)
@@ -30,7 +30,7 @@ namespace AopTest
 
         public override void OnExecuted(AspectContext context)
         {
-            Console.WriteLine("执行方法后过滤器");
+            Console.WriteLine("执行：方法后过滤器");
             //var sw = context.Datas["sw"] as Stopwatch;
             //if (sw != null)
             //{
