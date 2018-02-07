@@ -417,10 +417,12 @@ namespace AopSugar
             //GetAllFatherInterfaces(bindType, interfaces);
 
             //获取所有属性
-            //PropertyInfo[] pis = GetAllPropeties(interfaces);
+            PropertyInfo[] pis = GetAllPropeties(new Type[] { bindType });
 
-            //FieldBuilder[] members = null;
-            //nitializeMembers(typeBuilder, bindType, pis, ref agent, ref members);
+            //生成代理+属性的私有成员
+            FieldBuilder agent = null;
+            FieldBuilder[] members = null;
+            InitializeMembers(typeBuilder, bindType, pis, ref agent, ref members);
 
             //识别AOP标记
             Type exType = null;
@@ -437,7 +439,7 @@ namespace AopSugar
             foreach (MethodInfo method in methods)
             {
                 if (method.Name.StartsWith("get_") || method.Name.StartsWith("set_")) continue;
-                ImplementMethodByClass(typeBuilder, method , basicTypes, authType, exType);
+                ImplementMethodByClass(typeBuilder,agent, method, basicTypes, authType, exType);
             }
 
             //处理接口中的所有属性（自定义标签的植入）
@@ -592,7 +594,7 @@ namespace AopSugar
 
 
         #region Helpers
-        private void ImplementMethodByClass(TypeBuilder typeBuilder, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
+        private void ImplementMethodByClass(TypeBuilder typeBuilder, FieldBuilder agent, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
             var pis = method.GetParameters();
             if (!method.IsPublic || !method.IsVirtual || IsObjectMethod(method)) return;
@@ -631,7 +633,7 @@ namespace AopSugar
             ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-          //  CallResult(il, method, pis, paramTypes, result, is_void);
+             CallResult(il,agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             ImplantCatchException(il, exType, context);
@@ -974,20 +976,6 @@ namespace AopSugar
             if (list.Count > 0) basicTypes = list.ToArray();
         }
 
-        private void CallResult(ILGenerator il, MethodInfo method, ParameterInfo[] pis, Type[] paramTypes, LocalBuilder result, bool is_void)
-        {
-            il.Emit(OpCodes.Ldarg_0); //加载类本身
-            il.Emit(OpCodes.Ldfld); //加载代理成员
-            //各个参数的入栈
-            for (int i = 0; i < pis.Length; i++)
-                il.Emit(OpCodes.Ldarg, i + 1);
-
-            //调用实际的代理成员方法
-            il.Emit(OpCodes.Callvirt, method);
-
-            if (!is_void)
-                il.Emit(OpCodes.Stloc, result);
-        }
         private void CallResult(ILGenerator il, FieldBuilder agent, MethodInfo method, ParameterInfo[] pis, Type[] paramTypes, LocalBuilder result, bool is_void)
         {
             il.Emit(OpCodes.Ldarg_0); //加载类本身
