@@ -1,0 +1,4 @@
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\bin\Debug\AopSugar.dll
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\bin\Debug\AopSugar.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\obj\Debug\AopSugar.dll
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\obj\Debug\AopSugar.pdb

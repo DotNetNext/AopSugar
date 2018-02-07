@@ -1,0 +1,14 @@
+D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.App.exe
+D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.App.pdb
+D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.dll
+D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.pdb
+D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.csprojResolveAssemblyReference.cache
+D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.exe
+D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.App.exe
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.App.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.dll
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.csprojResolveAssemblyReference.cache
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.exe
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.pdb

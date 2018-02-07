@@ -1,0 +1,13 @@
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.App.exe
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.App.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.dll
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\bin\Debug\DotNet.EasyAssemble.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\AopTest.csprojResolveAssemblyReference.cache
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.exe
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble.App\obj\Debug\DotNet.EasyAssemble.App.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\bin\Debug\AopSugar.dll
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\bin\Debug\AopSugar.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\bin\Debug\AopTest.exe
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\bin\Debug\AopTest.pdb
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\obj\Debug\AopTest.exe
+C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopTest\obj\Debug\AopTest.pdb
