@@ -629,7 +629,7 @@ namespace AopSugar
             ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-            //CallResult(il, agent, method, pis, paramTypes, result, is_void);
+           // CallResult(il,method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             ImplantCatchException(il, exType, context);
@@ -978,6 +978,20 @@ namespace AopSugar
             if (list.Count > 0) basicTypes = list.ToArray();
         }
 
+        private void CallResult(ILGenerator il, MethodInfo method, ParameterInfo[] pis, Type[] paramTypes, LocalBuilder result, bool is_void)
+        {
+            return;
+            il.Emit(OpCodes.Ldarg_0); //加载类本身
+            //各个参数的入栈
+            for (int i = 0; i < pis.Length; i++)
+                il.Emit(OpCodes.Ldarg, i + 1);
+
+            //调用实际的代理成员方法
+            il.Emit(OpCodes.Callvirt, method);
+
+            if (!is_void)
+                il.Emit(OpCodes.Stloc, result);
+        }
         private void CallResult(ILGenerator il, FieldBuilder agent, MethodInfo method, ParameterInfo[] pis, Type[] paramTypes, LocalBuilder result, bool is_void)
         {
             il.Emit(OpCodes.Ldarg_0); //加载类本身
