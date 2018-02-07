@@ -590,6 +590,8 @@ namespace AopSugar
             return paramTypes;
         }
 
+
+        #region Helpers
         private void ImplementMethodByClass(TypeBuilder typeBuilder, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
             var pis = method.GetParameters();
@@ -615,7 +617,7 @@ namespace AopSugar
             LocalBuilder obj_arr = null;
 
             //如果存在AOP标记，则开始初始化上下文对象
-             context = InitializeAspectContext(il, paramTypes, ref obj_arr);
+            context = InitializeAspectContext(il, paramTypes, ref obj_arr);
 
 
             //开始植入基本（执行前）的AOP代码
@@ -629,7 +631,7 @@ namespace AopSugar
             ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-            CallResult(il,method, pis, paramTypes, result, is_void);
+            CallResult(il, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             ImplantCatchException(il, exType, context);
@@ -654,7 +656,6 @@ namespace AopSugar
             il.Emit(OpCodes.Ret);
         }
 
-        #region Helpers
         private void ImplementMethodByInterface(TypeBuilder typeBuilder, FieldBuilder agent, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
             var pis = method.GetParameters();
