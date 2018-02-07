@@ -629,7 +629,7 @@ namespace AopSugar
             ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-            CallResult(il, agent, method, pis, paramTypes, result, is_void);
+            //CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             ImplantCatchException(il, exType, context);
