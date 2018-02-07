@@ -1,5 +1,0 @@
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopSugar\bin\Debug\AopSugar.dll
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopSugar\bin\Debug\AopSugar.pdb
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopSugar\obj\Debug\AopSugar.dll
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopSugar\obj\Debug\AopSugar.pdb
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\AopSugar\obj\Debug\AopSugar.csprojResolveAssemblyReference.cache

@@ -1,9 +1,0 @@
-D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble\bin\Debug\DotNet.EasyAssemble.dll
-D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble\bin\Debug\DotNet.EasyAssemble.pdb
-D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble\obj\Debug\DotNet.EasyAssemble.dll
-D:\apps\DotNet.EasyAssemble\DotNet.EasyAssemble\obj\Debug\DotNet.EasyAssemble.pdb
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\bin\Debug\DotNet.EasyAssemble.dll
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\bin\Debug\DotNet.EasyAssemble.pdb
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\obj\Debug\DotNet.EasyAssemble.dll
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\obj\Debug\DotNet.EasyAssemble.pdb
-C:\Users\SUNKAIXUAN\Downloads\DotNet.EasyAssemble\DotNet.EasyAssemble\obj\Debug\DotNet.EasyAssemble.csprojResolveAssemblyReference.cache
