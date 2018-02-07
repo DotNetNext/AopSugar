@@ -21,7 +21,7 @@ namespace AopTest
         [LogFilter]
         public virtual bool ValidateUser(string name, string pass)
         {
-            Console.WriteLine("执行：ValidateUser");
+            Console.WriteLine("执行：方法");
             //模拟方法的耗时
             Random rnd = new Random();
             System.Threading.Thread.Sleep(rnd.Next(100, 1000));
