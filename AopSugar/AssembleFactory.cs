@@ -663,6 +663,9 @@ namespace AopSugar
             var pis = method.GetParameters();
             Type[] paramTypes = pis.Select(c => c.ParameterType).ToArray();
 
+            //识别方法上的标记（方法上的标记覆盖类上的标记）
+            var atts = agent.FieldType.GetMethod(method.Name, paramTypes).GetCustomAttributes(true);
+
             //实现接口的方法标记
             MethodAttributes attr = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final;
             MethodBuilder methodBuilder = typeBuilder.DefineMethod(method.Name, attr, method.ReturnType, paramTypes);
@@ -677,8 +680,6 @@ namespace AopSugar
             bool is_void = false;
             LocalBuilder result = InitializeResult(il, method.ReturnType, ref is_void);
 
-            //识别方法上的标记（方法上的标记覆盖类上的标记）
-            var atts = agent.FieldType.GetMethod(method.Name, paramTypes).GetCustomAttributes(true);
             FilterAspect(atts, ref basicTypes, ref authType, ref exType);
 
             //初始化上下文对象
