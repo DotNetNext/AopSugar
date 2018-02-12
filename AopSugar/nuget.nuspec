@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>AopSugar</id>
+    <version>1.0</version>
+    <title>AopSugar </title>
+    <authors>sun kai xuan</authors>
+    <owners>sun kai xuan</owners>
+     <licenseUrl>https://github.com/sunkaixuan/AopSugar</licenseUrl>
+    <projectUrl>https://github.com/sunkaixuan/AopSugar</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/a82c03402497b2e58fd65038a3699b30</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Aop</description>
+    <copyright>Copyright 2018</copyright>
+    <tags>asp.net orm</tags>
+  </metadata>
+  <files>
+         <file src="C:\AopNuget\AopSugar.dll" target="lib"></file>
+  </files>
+</package>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace AopSugar
 {
@@ -13,6 +14,8 @@ namespace AopSugar
         public object[] Args { get; set; }
 
         public object Result { get; set; }
+
+        public string MethodName { get; set; }
 
         public Dictionary<string, object> Datas
         {

@@ -619,7 +619,7 @@ namespace AopSugar
             LocalBuilder obj_arr = null;
 
             //如果存在AOP标记，则开始初始化上下文对象
-            context = InitializeAspectContext(il, paramTypes, ref obj_arr);
+            context = InitializeAspectContext(il, paramTypes, ref obj_arr, method);
 
 
             //开始植入基本（执行前）的AOP代码
@@ -687,7 +687,7 @@ namespace AopSugar
 
             //如果存在AOP标记，则开始初始化上下文对象
             if (basicTypes != null || authType != null || exType != null)
-                context = InitializeAspectContext(il, paramTypes, ref obj_arr);
+                context = InitializeAspectContext(il, paramTypes, ref obj_arr, method);
 
             //开始植入基本（执行前）的AOP代码
             var basics = ImplantExecutingBasics(il, basicTypes, context);
@@ -992,7 +992,6 @@ namespace AopSugar
             if (!is_void)
                 il.Emit(OpCodes.Stloc, result);
         }
-
         private LocalBuilder InitializeParameterArray(ILGenerator il, Type[] paramTypes)
         {
             var obj_arr = il.DeclareLocal(typeof(object[])); //声明数组的局部变量
@@ -1041,7 +1040,7 @@ namespace AopSugar
             return obj_arr;
         }
 
-        private LocalBuilder InitializeAspectContext(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr)
+        private LocalBuilder InitializeAspectContext(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr,MethodInfo method)
         {
             obj_arr = InitializeParameterArray(il, paramTypes);
 
@@ -1054,11 +1053,16 @@ namespace AopSugar
             il.Emit(OpCodes.Stloc, context);
 
             //给AspectContext的参数值属性Args赋值
-            var method = aspectType.GetMethod("set_Args");
+            var setArgsMethod = aspectType.GetMethod("set_Args");
             il.Emit(OpCodes.Ldloc, context);
             il.Emit(OpCodes.Ldloc, obj_arr);
-            il.Emit(OpCodes.Call, method);
-
+            il.Emit(OpCodes.Call, setArgsMethod);
+            il.Emit(OpCodes.Nop);
+            var setMethodMethod = aspectType.GetMethod("set_MethodName");
+            il.Emit(OpCodes.Ldloc, context);
+            il.Emit(OpCodes.Ldstr, method.Name);
+            il.Emit(OpCodes.Call, setMethodMethod);
+            il.Emit(OpCodes.Nop);
             return context;
         }
 
