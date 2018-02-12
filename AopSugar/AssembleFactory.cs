@@ -1058,10 +1058,23 @@ namespace AopSugar
             il.Emit(OpCodes.Ldloc, obj_arr);
             il.Emit(OpCodes.Call, setArgsMethod);
             il.Emit(OpCodes.Nop);
+
             var setMethodMethod = aspectType.GetMethod("set_MethodName");
             il.Emit(OpCodes.Ldloc, context);
             il.Emit(OpCodes.Ldstr, method.Name);
             il.Emit(OpCodes.Call, setMethodMethod);
+            il.Emit(OpCodes.Nop);
+
+            var setClassMethod = aspectType.GetMethod("set_ClassName");
+            il.Emit(OpCodes.Ldloc, context);
+            il.Emit(OpCodes.Ldstr, method.ReflectedType.Name);
+            il.Emit(OpCodes.Call, setClassMethod);
+            il.Emit(OpCodes.Nop);
+
+            var setNamespaceMethod = aspectType.GetMethod("set_Namespace");
+            il.Emit(OpCodes.Ldloc, context);
+            il.Emit(OpCodes.Ldstr, method.ReflectedType.Namespace);
+            il.Emit(OpCodes.Call, setNamespaceMethod);
             il.Emit(OpCodes.Nop);
             return context;
         }

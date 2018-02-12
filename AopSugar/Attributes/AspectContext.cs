@@ -16,6 +16,8 @@ namespace AopSugar
         public object Result { get; set; }
 
         public string MethodName { get; set; }
+        public string ClassName { get; set; }
+        public string Namespace { get; set; }
 
         public Dictionary<string, object> Datas
         {
