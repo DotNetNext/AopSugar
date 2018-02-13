@@ -29,6 +29,7 @@ public class UserMamager_C81551 : UserMamager
             Namespace = "AopTest"
         };
         context.MethodInfo = MethodHelper.GetMethod(m_Agent, "ValidateUser");
+        context.Attributes = MethodHelper.GetCustomAttributes(m_Agent, "ValidateUser");
         ActionFilter filter = new ActionFilter();
         filter.OnExecuting(context);
         LogFilter filter2 = new LogFilter();
