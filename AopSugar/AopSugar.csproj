@@ -47,10 +47,10 @@
     <Compile Include="Attributes\ActionAttribute.cs" />
     <Compile Include="Helper\MethodHelper.cs" />
     <Compile Include="Helper\TypeHelper.cs" />
-    <Compile Include="AopCore.cs" />
+    <Compile Include="Core\AopCore.cs" />
     <Compile Include="Models\CommonConst.cs" />
     <Compile Include="Models\BindElement.cs" />
-    <Compile Include="BindExtension.cs" />
+    <Compile Include="Extendsions\BindExtension.cs" />
     <Compile Include="Helper\EmitHelper.cs" />
     <Compile Include="Attributes\ExceptionAttribute.cs" />
     <Compile Include="Models\PropertiesAction.cs" />
