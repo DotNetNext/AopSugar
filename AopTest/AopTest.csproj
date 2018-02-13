@@ -47,7 +47,6 @@
     <Compile Include="App_Code\Aops\LogFilter.cs" />
     <Compile Include="App_Code\BLL\UserMamager.cs" />
     <Compile Include="App_Code\BLL\IUserMamager.cs" />
-    <Compile Include="DynamicClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
