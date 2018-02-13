@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AopSugar
 {
-    internal class MethodHelper
+    public class MethodHelper
     {
         public static bool IsObjectMethod(MethodInfo method)
         {
@@ -24,6 +24,14 @@ namespace AopSugar
             return paramTypes;
         }
 
+        public static MethodInfo GetMethod(object obj, string name)
+        {
+            return obj.GetType().GetMethod(name);
+        }
 
+        public static object[] GetCustomAttributes(object obj, string name)
+        {
+            return obj.GetType().GetMethod(name).GetCustomAttributes(true);
+        }
     }
 }

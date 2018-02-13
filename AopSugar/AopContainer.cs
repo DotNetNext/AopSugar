@@ -483,7 +483,7 @@ namespace AopSugar
             Type dynamicType = typeBuilder.CreateType();
 
             //如果想看动态生成的实际类型，可放开此代码，就可在运行dll的目录找到
-            //m_AssemblyBuilder.Save(m_DllName); //保存到本地
+            //m_AssemblyBuilder.Save("333.dll"); //保存到本地
 
             return dynamicType;
         }
@@ -513,7 +513,7 @@ namespace AopSugar
             LocalBuilder obj_arr = null;
 
             //如果存在AOP标记，则开始初始化上下文对象
-            context = Initialize.Context(il, paramTypes, ref obj_arr, method);
+            context = Initialize.Context(il, paramTypes, ref obj_arr, method, agent);
 
 
             //开始植入基本（执行前）的AOP代码
@@ -582,7 +582,7 @@ namespace AopSugar
 
             //如果存在AOP标记，则开始初始化上下文对象
             if (basicTypes != null || authType != null || exType != null)
-                context = Initialize.Context(il, paramTypes, ref obj_arr, method);
+                context = Initialize.Context(il, paramTypes, ref obj_arr, method,agent);
 
             //开始植入基本（执行前）的AOP代码
             var basics = Initialize.ExecutingBasics(il, basicTypes, context);

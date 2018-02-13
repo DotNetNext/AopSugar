@@ -20,7 +20,7 @@ namespace AopSugar
         /// <param name="obj_arr"></param>
         /// <param name="method"></param>
         /// <returns></returns>
-        public static LocalBuilder Context(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr, MethodInfo method)
+        public static LocalBuilder Context(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr, MethodInfo method, FieldBuilder agent)
         {
             obj_arr = ParameterArray(il, paramTypes);
 
@@ -56,6 +56,20 @@ namespace AopSugar
             il.Emit(OpCodes.Ldstr, method.ReflectedType.Namespace);
             il.Emit(OpCodes.Call, setNamespaceMethod);
             il.Emit(OpCodes.Nop);
+
+            var setMethodInfoMethod = aspectType.GetMethod("set_MethodInfo");
+            var getMethodType = typeof(MethodHelper).GetMethod("GetMethod");
+            il.Emit(OpCodes.Ldloc, context);
+            il.Emit(OpCodes.Ldarg_0); //加载类本身
+            il.Emit(OpCodes.Ldfld, agent); //加载代理成员
+            il.Emit(OpCodes.Ldstr, method.Name);
+            il.Emit(OpCodes.Call, getMethodType);
+            il.Emit(OpCodes.Call, setMethodInfoMethod);
+            il.Emit(OpCodes.Nop);
+
+
+         
+
             return context;
         }
         /// <summary>
