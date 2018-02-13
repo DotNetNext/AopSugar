@@ -9,7 +9,6 @@ namespace AopSugar
     /// </summary>
     public class AspectContext
     {
-        private Dictionary<string, object> m_Datas = null;
         /// <summary>
         /// 参数值集合
         /// </summary>
@@ -17,7 +16,28 @@ namespace AopSugar
         /// <summary>
         /// 参数名称集合
         /// </summary>
-        public object[] ArgNames { get; set; }
+        public string[] ArgNames { get; set; }
+        /// <summary>
+        /// 参数明细
+        /// </summary>
+        public Dictionary<string, object> ArgDetails
+        {
+            get
+            {
+                if (_ArgDetails == null)
+                {
+                    _ArgDetails = new Dictionary<string, object>();
+                    if (Args != null && ArgNames != null && Args.Length == ArgNames.Length) {
+                        for (int i = 0; i < Args.Length; i++)
+                        {
+                            _ArgDetails.Add(ArgNames[i],Args[i]);
+                        }
+                    }
+                }
+
+                return _ArgDetails;
+            }
+        }
         /// <summary>
         /// 方法名称
         /// </summary>
@@ -46,15 +66,6 @@ namespace AopSugar
         /// </summary>
         public string Namespace { get; set; }
 
-        public Dictionary<string, object> Datas
-        {
-            get
-            {
-                if (m_Datas == null)
-                    m_Datas = new Dictionary<string, object>();
-
-                return m_Datas;
-            }
-        }
+        private Dictionary<string, object> _ArgDetails = null;
     }
 }
