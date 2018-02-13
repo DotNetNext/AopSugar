@@ -118,5 +118,27 @@ namespace AopSugar
 
             return infos[0].ReflectedType;
         }
+
+
+        public static void Ldind(ILGenerator il, Type type)
+        {
+            if (type == CommonConst.I1)
+                il.Emit(OpCodes.Ldind_I1);
+            else if (type == CommonConst.I2)
+                il.Emit(OpCodes.Ldind_I2);
+            else if (type == CommonConst.I4)
+                il.Emit(OpCodes.Ldind_I4);
+            else if (type == CommonConst.I8)
+                il.Emit(OpCodes.Ldind_I8);
+            else if (type == CommonConst.R4)
+                il.Emit(OpCodes.Ldind_R4);
+            else if (type == CommonConst.U1)
+                il.Emit(OpCodes.Ldind_U1);
+            else if (type == CommonConst.U2)
+                il.Emit(OpCodes.Ldind_U2);
+            else if (type == CommonConst.U4)
+                il.Emit(OpCodes.Ldind_U4);
+        }
+
     }
 }

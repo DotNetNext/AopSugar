@@ -12,7 +12,7 @@ namespace AopSugar
     public class AssembleFactory
     {
         #region fields and properies
-    
+
 
         //允许的最大装配深度
         private int m_MaxDepth = 1;
@@ -26,7 +26,7 @@ namespace AopSugar
         //注册类型的缓存池
         private Dictionary<string, BindElement> BIND_DICTIONARY = new Dictionary<string, BindElement>();
         //实例代理的缓存池
-        private Dictionary<string, Func<object>> FUNC_DICTIONARY = new Dictionary<string, Func<object>>(); 
+        private Dictionary<string, Func<object>> FUNC_DICTIONARY = new Dictionary<string, Func<object>>();
         #endregion
 
         public AssembleFactory(int maxDepth)
@@ -182,7 +182,7 @@ namespace AopSugar
                 if (!bind.BindType.IsInterface || (bind.BindType.IsInterface && !HasAspectAttribute(bind.ToType)))
                     agentType = CreateAgentTypeByClass(bind.BindType); //创建代理类
                 else
-                { 
+                {
                     agentType = CreateAgentTypeByInterface(bind.BindType, bind.ToType); //创建代理类
 
                     //更新BindElement
@@ -424,7 +424,7 @@ namespace AopSugar
             foreach (MethodInfo method in methods)
             {
                 if (method.Name.StartsWith("get_") || method.Name.StartsWith("set_")) continue;
-                ImplementMethodByClass(typeBuilder,agent, method, basicTypes, authType, exType);
+                ImplementMethodByClass(typeBuilder, agent, method, basicTypes, authType, exType);
             }
 
             //处理接口中的所有属性（自定义标签的植入）
@@ -593,7 +593,7 @@ namespace AopSugar
             LocalBuilder obj_arr = null;
 
             //如果存在AOP标记，则开始初始化上下文对象
-            context = InitializeAspectContext(il, paramTypes, ref obj_arr, method);
+            context = InitializeAspect.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
 
 
             //开始植入基本（执行前）的AOP代码
@@ -607,7 +607,7 @@ namespace AopSugar
             ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-             CallResult(il,agent, method, pis, paramTypes, result, is_void);
+            CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             ImplantCatchException(il, exType, context);
@@ -662,7 +662,7 @@ namespace AopSugar
 
             //如果存在AOP标记，则开始初始化上下文对象
             if (basicTypes != null || authType != null || exType != null)
-                context = InitializeAspectContext(il, paramTypes, ref obj_arr, method);
+                context = InitializeAspect.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
 
             //开始植入基本（执行前）的AOP代码
             var basics = ImplantExecutingBasics(il, basicTypes, context);
@@ -856,11 +856,11 @@ namespace AopSugar
                 il.Emit(OpCodes.Ldloc, obj_arr); //数组对象入栈
                 il.Emit(OpCodes.Ldc_I4, i); //下标入栈
 
-                Type unRefType =TypeHelper.GetUnRefType(paramType);
+                Type unRefType = TypeHelper.GetUnRefType(paramType);
                 if (unRefType.IsValueType)
                 {
                     il.Emit(OpCodes.Ldarg, i + 1); //对应下标的参数值入栈，注：OpCodes.Ldarg_0 此时代表类对象本身，参数列表的下标从1开始
-                    Ldind(il, unRefType);
+                    EmitHelper.Ldind(il, unRefType);
                     il.Emit(OpCodes.Box, unRefType);
                 }
                 else
@@ -967,92 +967,7 @@ namespace AopSugar
             if (!is_void)
                 il.Emit(OpCodes.Stloc, result);
         }
-        private LocalBuilder InitializeParameterArray(ILGenerator il, Type[] paramTypes)
-        {
-            var obj_arr = il.DeclareLocal(typeof(object[])); //声明数组的局部变量
-            il.Emit(OpCodes.Ldc_I4, paramTypes.Length); //数组长度入栈
-            il.Emit(OpCodes.Newarr, typeof(object)); //初始化数组
-            il.Emit(OpCodes.Stloc, obj_arr); //对数组的局部变量赋值
 
-            //各个参数进数组
-            for (int i = 0; i < paramTypes.Length; i++)
-            {
-                il.Emit(OpCodes.Ldloc, obj_arr); //数组对象入栈
-                il.Emit(OpCodes.Ldc_I4, i); //下标入栈
-
-                var paramType = paramTypes[i];
-
-                //对应下标的参数值入栈，注：OpCodes.Ldarg_0 此时代表类对象本身，参数列表的下标从1开始
-                if (!paramType.IsByRef)
-                {
-                    if (!paramType.IsValueType)
-                        il.Emit(OpCodes.Ldarg, i + 1);
-                    else
-                    {
-                        il.Emit(OpCodes.Ldarg, i + 1);
-                        il.Emit(OpCodes.Box, paramType);
-                    }
-                }
-                else
-                {
-                    Type unRefType =TypeHelper.GetUnRefType(paramType);
-                    if (unRefType.IsValueType)
-                    {
-                        il.Emit(OpCodes.Ldarg, i + 1);
-                        Ldind(il, unRefType);
-                        il.Emit(OpCodes.Box, unRefType);
-                    }
-                    else
-                    {
-                        il.Emit(OpCodes.Ldarg_S, i + 1);
-                        il.Emit(OpCodes.Ldind_Ref);
-                    }
-                }
-
-                il.Emit(OpCodes.Stelem_Ref); //进行数组的赋值操作
-            }
-
-            return obj_arr;
-        }
-
-        private LocalBuilder InitializeAspectContext(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr,MethodInfo method)
-        {
-            obj_arr = InitializeParameterArray(il, paramTypes);
-
-            //初始化AspectContext
-            Type aspectType = typeof(AspectContext);
-            ConstructorInfo info = aspectType.GetConstructor(Type.EmptyTypes);
-
-            var context = il.DeclareLocal(aspectType);
-            il.Emit(OpCodes.Newobj, info);
-            il.Emit(OpCodes.Stloc, context);
-
-            //给AspectContext的参数值属性Args赋值
-            var setArgsMethod = aspectType.GetMethod("set_Args");
-            il.Emit(OpCodes.Ldloc, context);
-            il.Emit(OpCodes.Ldloc, obj_arr);
-            il.Emit(OpCodes.Call, setArgsMethod);
-            il.Emit(OpCodes.Nop);
-
-            var setMethodMethod = aspectType.GetMethod("set_MethodName");
-            il.Emit(OpCodes.Ldloc, context);
-            il.Emit(OpCodes.Ldstr, method.Name);
-            il.Emit(OpCodes.Call, setMethodMethod);
-            il.Emit(OpCodes.Nop);
-
-            var setClassMethod = aspectType.GetMethod("set_ClassName");
-            il.Emit(OpCodes.Ldloc, context);
-            il.Emit(OpCodes.Ldstr, method.ReflectedType.Name);
-            il.Emit(OpCodes.Call, setClassMethod);
-            il.Emit(OpCodes.Nop);
-
-            var setNamespaceMethod = aspectType.GetMethod("set_Namespace");
-            il.Emit(OpCodes.Ldloc, context);
-            il.Emit(OpCodes.Ldstr, method.ReflectedType.Namespace);
-            il.Emit(OpCodes.Call, setNamespaceMethod);
-            il.Emit(OpCodes.Nop);
-            return context;
-        }
 
         private void DefineParameters(MethodBuilder methodBuilder, ParameterInfo[] pis)
         {
@@ -1097,26 +1012,6 @@ namespace AopSugar
             m_ModuleBuilder = m_AssemblyBuilder.DefineDynamicModule(assName, m_DllName);
         }
 
-        private void Ldind(ILGenerator il, Type type)
-        {
-            if (type == CommonConst.I1)
-                il.Emit(OpCodes.Ldind_I1);
-            else if (type == CommonConst.I2)
-                il.Emit(OpCodes.Ldind_I2);
-            else if (type == CommonConst.I4)
-                il.Emit(OpCodes.Ldind_I4);
-            else if (type == CommonConst.I8)
-                il.Emit(OpCodes.Ldind_I8);
-            else if (type == CommonConst.R4)
-                il.Emit(OpCodes.Ldind_R4);
-            else if (type == CommonConst.U1)
-                il.Emit(OpCodes.Ldind_U1);
-            else if (type == CommonConst.U2)
-                il.Emit(OpCodes.Ldind_U2);
-            else if (type == CommonConst.U4)
-                il.Emit(OpCodes.Ldind_U4);
-        }
-
         private string GetCacheName(string name, Type type)
         {
             if (!string.IsNullOrEmpty(name))
@@ -1124,7 +1019,7 @@ namespace AopSugar
 
             return string.Format("!!_{0}_{1}", type.FullName, type.Assembly.FullName);
         }
-   
+
         #endregion
     }
 }
