@@ -402,7 +402,7 @@ namespace AopSugar
             //GetAllFatherInterfaces(bindType, interfaces);
 
             //获取所有属性
-            PropertyInfo[] pis = GetAllPropeties(new Type[] { bindType });
+            PropertyInfo[] pis = TypeHelper.GetAllPropeties(new Type[] { bindType });
 
             //生成代理+属性的私有成员
             FieldBuilder agent = null;
@@ -446,10 +446,10 @@ namespace AopSugar
 
             //获取所有的父接口
             IList<Type> interfaces = new List<Type>();
-            GetAllFatherInterfaces(interfaceType, interfaces);
+            TypeHelper.GetAllFatherInterfaces(interfaceType, interfaces);
 
             //获取所有属性
-            PropertyInfo[] pis = GetAllPropeties(interfaces);
+            PropertyInfo[] pis = TypeHelper.GetAllPropeties(interfaces);
 
             //生成代理+属性的私有成员
             FieldBuilder agent = null;
@@ -466,7 +466,7 @@ namespace AopSugar
             FilterAspect(atts, ref basicTypes, ref authType, ref exType);
 
             //处理接口中的所有方法（对方法进行IL植入）
-            MethodInfo[] methods = GetAllMethods(interfaces);
+            MethodInfo[] methods = TypeHelper.GetAllMethods(interfaces);
             foreach (MethodInfo method in methods)
             {
                 //忽略所有属性的get和set方法
@@ -486,36 +486,6 @@ namespace AopSugar
             //m_AssemblyBuilder.Save(m_DllName); //保存到本地
 
             return dynamicType;
-        }
-
-        private MethodInfo[] GetAllMethods(IList<Type> list)
-        {
-            List<MethodInfo> methods = new List<MethodInfo>();
-            foreach (var item in list)
-                methods.AddRange(item.GetMethods(BindingFlags.Public | BindingFlags.Instance));
-
-            return methods.ToArray();
-        }
-
-        private PropertyInfo[] GetAllPropeties(IList<Type> list)
-        {
-            List<PropertyInfo> props = new List<PropertyInfo>();
-            foreach (var item in list)
-                props.AddRange(item.GetProperties(BindingFlags.Public | BindingFlags.Instance));
-
-            return props.ToArray();
-        }
-
-        private void GetAllFatherInterfaces(Type type, IList<Type> list)
-        {
-            list.Add(type);
-            var types = type.GetInterfaces(); //获取所有的继承的接口
-
-            if (types == null || types.Length == 0)
-                return;
-
-            foreach (var item in types)
-                GetAllFatherInterfaces(item, list);
         }
 
         #region Helpers

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AopSugar
 {
-    public class MethodHelper
+    internal class MethodHelper
     {
         public static bool IsObjectMethod(MethodInfo method)
         {

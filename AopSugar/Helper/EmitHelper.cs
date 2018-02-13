@@ -9,7 +9,7 @@ namespace AopSugar
     /// <summary>
     /// Emit帮助类
     /// </summary>
-    public static class EmitHelper
+    internal static class EmitHelper
     {
         public static Func<object> CreateFunc(Type type)
         {
