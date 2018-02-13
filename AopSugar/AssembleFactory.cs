@@ -528,7 +528,7 @@ namespace AopSugar
             EmitHelper.ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-            CallResult(il, agent, method, pis, paramTypes, result, is_void);
+            AopCore.CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             EmitHelper.ImplantCatchException(il, exType, context);
@@ -540,10 +540,10 @@ namespace AopSugar
             AopCore.AppendParameterRefValues(il, paramTypes, obj_arr);
 
             //将本次执行的结果附加到当前的上下文环境中
-            AppendContextResult(il, context, result);
+            AopCore.AppendContextResult(il, context, result);
 
             //开始植入基本（执行后）的AOP代码
-            ImplantExecutedBasics(il, basics, basicTypes, context);
+            AopCore.ImplantExecutedBasics(il, basics, basicTypes, context);
 
             //如果有返回值，则结果压栈
             if (!is_void)
@@ -596,7 +596,7 @@ namespace AopSugar
             EmitHelper.ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-            CallResult(il, agent, method, pis, paramTypes, result, is_void);
+            AopCore.CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             EmitHelper.ImplantCatchException(il, exType, context);
@@ -608,10 +608,10 @@ namespace AopSugar
             AopCore.AppendParameterRefValues(il, paramTypes, obj_arr);
 
             //将本次执行的结果附加到当前的上下文环境中
-            AppendContextResult(il, context, result);
+            AopCore.AppendContextResult(il, context, result);
 
             //开始植入基本（执行后）的AOP代码
-            ImplantExecutedBasics(il, basics, basicTypes, context);
+            AopCore.ImplantExecutedBasics(il, basics, basicTypes, context);
 
             //如果有返回值，则结果压栈
             if (!is_void)
@@ -708,48 +708,6 @@ namespace AopSugar
 
 
 
-        private void AppendContextResult(ILGenerator il, LocalBuilder context, LocalBuilder result)
-        {
-            if (context == null || result == null)
-                return;
-
-            var obj = il.DeclareLocal(typeof(object));
-            var method = typeof(AspectContext).GetMethod("set_Result");
-
-            //对值类型的返回值进行装箱
-            il.Emit(OpCodes.Ldloc, result);
-            if (result.LocalType.IsValueType)
-                il.Emit(OpCodes.Box, result.LocalType);
-            else
-                il.Emit(OpCodes.Castclass, typeof(object));
-
-            il.Emit(OpCodes.Stloc, obj);
-
-            //进行属性的赋值
-            il.Emit(OpCodes.Ldloc, context);
-            il.Emit(OpCodes.Ldloc, obj);
-            il.Emit(OpCodes.Callvirt, method);
-        }
-
-
-
-
-
-
-        private void ImplantExecutedBasics(ILGenerator il, LocalBuilder[] basics, Type[] basicTypes, LocalBuilder context)
-        {
-            if (basics == null || basicTypes == null || basicTypes.Length == 0 || basicTypes.Length != basics.Length)
-                return;
-
-            int len = basics.Length;
-            for (int i = 0; i < len; i++)
-            {
-                il.Emit(OpCodes.Ldloc, basics[i]);
-                il.Emit(OpCodes.Ldloc, context);
-                il.Emit(OpCodes.Callvirt, basicTypes[i].GetMethod("OnExecuted"));
-            }
-        }
-
         private void FilterAspect(object[] atts, ref Type[] basicTypes, ref Type authType, ref Type exType)
         {
             if (atts == null || atts.Length == 0)
@@ -769,22 +727,6 @@ namespace AopSugar
             if (list.Count > 0) basicTypes = list.ToArray();
         }
 
-        private void CallResult(ILGenerator il, FieldBuilder agent, MethodInfo method, ParameterInfo[] pis, Type[] paramTypes, LocalBuilder result, bool is_void)
-        {
-            il.Emit(OpCodes.Ldarg_0); //加载类本身
-            il.Emit(OpCodes.Ldfld, agent); //加载代理成员
-
-            //各个参数的入栈
-            for (int i = 0; i < pis.Length; i++)
-                il.Emit(OpCodes.Ldarg, i + 1);
-
-            //调用实际的代理成员方法
-            var impl_method = agent.FieldType.GetMethod(method.Name, paramTypes);
-            il.Emit(OpCodes.Callvirt, impl_method);
-
-            if (!is_void)
-                il.Emit(OpCodes.Stloc, result);
-        }
 
 
         private void DefineParameters(MethodBuilder methodBuilder, ParameterInfo[] pis)
@@ -837,7 +779,6 @@ namespace AopSugar
 
             return string.Format("!!_{0}_{1}", type.FullName, type.Assembly.FullName);
         }
-
         #endregion
     }
 }
