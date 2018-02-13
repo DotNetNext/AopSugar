@@ -856,7 +856,7 @@ namespace AopSugar
                 il.Emit(OpCodes.Ldloc, obj_arr); //数组对象入栈
                 il.Emit(OpCodes.Ldc_I4, i); //下标入栈
 
-                Type unRefType = GetUnRefType(paramType);
+                Type unRefType =TypeHelper.GetUnRefType(paramType);
                 if (unRefType.IsValueType)
                 {
                     il.Emit(OpCodes.Ldarg, i + 1); //对应下标的参数值入栈，注：OpCodes.Ldarg_0 此时代表类对象本身，参数列表的下标从1开始
@@ -995,7 +995,7 @@ namespace AopSugar
                 }
                 else
                 {
-                    Type unRefType = GetUnRefType(paramType);
+                    Type unRefType =TypeHelper.GetUnRefType(paramType);
                     if (unRefType.IsValueType)
                     {
                         il.Emit(OpCodes.Ldarg, i + 1);
@@ -1065,11 +1065,6 @@ namespace AopSugar
                 if (pi.IsOptional)
                     pb.SetConstant(pi.DefaultValue);
             }
-        }
-
-        private Type GetUnRefType(Type type)
-        {
-            return Type.GetType(string.Format("{0}, {1}", type.FullName.TrimEnd('&'), type.Assembly.FullName), true, true);
         }
 
         private string GetTypeName(Type type)

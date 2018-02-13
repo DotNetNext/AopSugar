@@ -46,6 +46,7 @@
     <Compile Include="Attributes\AuthenticationAttribute.cs" />
     <Compile Include="Attributes\ActionAttribute.cs" />
     <Compile Include="Helper\MethodHelper.cs" />
+    <Compile Include="Helper\TypeHelper.cs" />
     <Compile Include="Models\CommonConst.cs" />
     <Compile Include="Models\BindElement.cs" />
     <Compile Include="BindExtension.cs" />
