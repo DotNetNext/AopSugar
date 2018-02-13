@@ -45,6 +45,7 @@
     <Compile Include="AssembleFactory.cs" />
     <Compile Include="Attributes\AuthenticationAttribute.cs" />
     <Compile Include="Attributes\ActionAttribute.cs" />
+    <Compile Include="Models\CommonConst.cs" />
     <Compile Include="Models\BindElement.cs" />
     <Compile Include="BindExtension.cs" />
     <Compile Include="EmitHelper.cs" />

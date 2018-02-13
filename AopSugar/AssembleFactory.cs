@@ -12,22 +12,7 @@ namespace AopSugar
     public class AssembleFactory
     {
         #region fields and properies
-        private static Type I1 = typeof(Byte);
-        private static Type I2 = typeof(Int16);
-        private static Type I4 = typeof(Int32);
-        private static Type I8 = typeof(Int64);
-        private static Type R4 = typeof(float);
-        private static Type U1 = typeof(uint);
-        private static Type U2 = typeof(UInt16);
-        private static Type U4 = typeof(UInt32);
-        private static Type S0 = typeof(string);
-
-        private static Type BT = typeof(ActionAttribute);
-        private static Type ET = typeof(ExceptionAttribute);
-        private static Type AT = typeof(AuthenticationAttribute);
-
-        private static AssembleFactory m_Instance = null;
-        private static object m_InstanceLocker = new object();
+    
 
         //允许的最大装配深度
         private int m_MaxDepth = 1;
@@ -59,19 +44,19 @@ namespace AopSugar
         {
             get
             {
-                if (m_Instance != null)
-                    return m_Instance;
+                if (CommonConst.m_Instance != null)
+                    return CommonConst.m_Instance;
 
-                lock (m_InstanceLocker)
+                lock (CommonConst.m_InstanceLocker)
                 {
-                    if (m_Instance != null)
-                        return m_Instance;
+                    if (CommonConst.m_Instance != null)
+                        return CommonConst.m_Instance;
 
                     //默认实例的最大装配深度为3（我脑子笨，多于3层我就闹不清楚了^_^）
-                    m_Instance = new AssembleFactory(3);
+                    CommonConst.m_Instance = new AssembleFactory(3);
                 }
 
-                return m_Instance;
+                return CommonConst.m_Instance;
             }
         }
 
@@ -90,7 +75,7 @@ namespace AopSugar
                 throw new ArgumentNullException("implement");
 
             //注册基本类型的单例模式时，必须指定name
-            if (string.IsNullOrEmpty(name) && (baseType.IsValueType || baseType == S0))
+            if (string.IsNullOrEmpty(name) && (baseType.IsValueType || baseType == CommonConst.S0))
                 throw new Exception(string.Format("注册类型[{0}]的实例时，必须指定参数name", baseType.FullName));
 
             string key = GetCacheName(name, baseType);
@@ -966,11 +951,11 @@ namespace AopSugar
             var list = new List<Type>();
             foreach (object att in atts)
             {
-                if (AT.IsInstanceOfType(att))
+                if (CommonConst.AT.IsInstanceOfType(att))
                     authType = att.GetType();
-                else if (ET.IsInstanceOfType(att))
+                else if (CommonConst.ET.IsInstanceOfType(att))
                     exType = att.GetType();
-                else if (BT.IsInstanceOfType(att))
+                else if (CommonConst.BT.IsInstanceOfType(att))
                     list.Add(att.GetType());
             }
 
@@ -1130,21 +1115,21 @@ namespace AopSugar
 
         private void Ldind(ILGenerator il, Type type)
         {
-            if (type == I1)
+            if (type == CommonConst.I1)
                 il.Emit(OpCodes.Ldind_I1);
-            else if (type == I2)
+            else if (type == CommonConst.I2)
                 il.Emit(OpCodes.Ldind_I2);
-            else if (type == I4)
+            else if (type == CommonConst.I4)
                 il.Emit(OpCodes.Ldind_I4);
-            else if (type == I8)
+            else if (type == CommonConst.I8)
                 il.Emit(OpCodes.Ldind_I8);
-            else if (type == R4)
+            else if (type == CommonConst.R4)
                 il.Emit(OpCodes.Ldind_R4);
-            else if (type == U1)
+            else if (type == CommonConst.U1)
                 il.Emit(OpCodes.Ldind_U1);
-            else if (type == U2)
+            else if (type == CommonConst.U2)
                 il.Emit(OpCodes.Ldind_U2);
-            else if (type == U4)
+            else if (type == CommonConst.U4)
                 il.Emit(OpCodes.Ldind_U4);
         }
 
