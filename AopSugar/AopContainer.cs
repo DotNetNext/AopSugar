@@ -407,7 +407,7 @@ namespace AopSugar
             //生成代理+属性的私有成员
             FieldBuilder agent = null;
             FieldBuilder[] members = null;
-            AopCore.InitializeMembers(typeBuilder, bindType, pis, ref agent, ref members);
+            Initialize.Members(typeBuilder, bindType, pis, ref agent, ref members);
 
             //识别AOP标记
             Type exType = null;
@@ -454,7 +454,7 @@ namespace AopSugar
             //生成代理+属性的私有成员
             FieldBuilder agent = null;
             FieldBuilder[] members = null;
-            AopCore.InitializeMembers(typeBuilder, implementType, pis, ref agent, ref members);
+            Initialize.Members(typeBuilder, implementType, pis, ref agent, ref members);
 
             //识别AOP标记
             Type exType = null;
@@ -513,21 +513,21 @@ namespace AopSugar
             LocalBuilder obj_arr = null;
 
             //如果存在AOP标记，则开始初始化上下文对象
-            context = AopCore.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
+            context = Initialize.Context(il, paramTypes, ref obj_arr, method);
 
 
             //开始植入基本（执行前）的AOP代码
-            var basics = AopCore.ImplantExecutingBasics(il, basicTypes, context);
+            var basics = Initialize.ExecutingBasics(il, basicTypes, context);
 
             //开始植入认证的AOP代码
             Label? lbl = null;
-            AopCore.ImplantAuthentication(il, authType, context, ref lbl);
+            Initialize.Authentication(il, authType, context, ref lbl);
 
             //开始植入异常(try)AOP代码
             EmitHelper.ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-            AopCore.CallResult(il, agent, method, pis, paramTypes, result, is_void);
+            Initialize.CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             EmitHelper.ImplantCatchException(il, exType, context);
@@ -536,13 +536,13 @@ namespace AopSugar
             if (lbl.HasValue) il.MarkLabel(lbl.Value);
 
             //对ref参数的值进行重新赋值
-            AopCore.AppendParameterRefValues(il, paramTypes, obj_arr);
+            ReSetValue(il, paramTypes, obj_arr);
 
             //将本次执行的结果附加到当前的上下文环境中
-            AopCore.AppendContextResult(il, context, result);
+            Initialize.AppendContextResult(il, context, result);
 
             //开始植入基本（执行后）的AOP代码
-            AopCore.ImplantExecutedBasics(il, basics, basicTypes, context);
+            Initialize.ImplantExecutedBasics(il, basics, basicTypes, context);
 
             //如果有返回值，则结果压栈
             if (!is_void)
@@ -582,20 +582,20 @@ namespace AopSugar
 
             //如果存在AOP标记，则开始初始化上下文对象
             if (basicTypes != null || authType != null || exType != null)
-                context = AopCore.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
+                context = Initialize.Context(il, paramTypes, ref obj_arr, method);
 
             //开始植入基本（执行前）的AOP代码
-            var basics = AopCore.ImplantExecutingBasics(il, basicTypes, context);
+            var basics = Initialize.ExecutingBasics(il, basicTypes, context);
 
             //开始植入认证的AOP代码
             Label? lbl = null;
-            AopCore.ImplantAuthentication(il, authType, context, ref lbl);
+            Initialize.Authentication(il, authType, context, ref lbl);
 
             //开始植入异常(try)AOP代码
             EmitHelper.ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
-            AopCore.CallResult(il, agent, method, pis, paramTypes, result, is_void);
+            Initialize.CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
             EmitHelper.ImplantCatchException(il, exType, context);
@@ -604,13 +604,13 @@ namespace AopSugar
             if (lbl.HasValue) il.MarkLabel(lbl.Value);
 
             //对ref参数的值进行重新赋值
-            AopCore.AppendParameterRefValues(il, paramTypes, obj_arr);
+            ReSetValue(il, paramTypes, obj_arr);
 
             //将本次执行的结果附加到当前的上下文环境中
-            AopCore.AppendContextResult(il, context, result);
+            Initialize.AppendContextResult(il, context, result);
 
             //开始植入基本（执行后）的AOP代码
-            AopCore.ImplantExecutedBasics(il, basics, basicTypes, context);
+            Initialize.ImplantExecutedBasics(il, basics, basicTypes, context);
 
             //如果有返回值，则结果压栈
             if (!is_void)
@@ -773,6 +773,36 @@ namespace AopSugar
                 return name = name.ToLower().Trim();
 
             return string.Format("!!_{0}_{1}", type.FullName, type.Assembly.FullName);
+        }
+        private  void ReSetValue(ILGenerator il, Type[] paramTypes, LocalBuilder obj_arr)
+        {
+            if (obj_arr == null)
+                return;
+
+            for (int i = 0; i < paramTypes.Length; i++)
+            {
+                var paramType = paramTypes[i];
+                if (!paramType.IsByRef) //非ref模式的直接跳过
+                    continue;
+
+                il.Emit(OpCodes.Ldloc, obj_arr); //数组对象入栈
+                il.Emit(OpCodes.Ldc_I4, i); //下标入栈
+
+                Type unRefType = TypeHelper.GetUnRefType(paramType);
+                if (unRefType.IsValueType)
+                {
+                    il.Emit(OpCodes.Ldarg, i + 1); //对应下标的参数值入栈，注：OpCodes.Ldarg_0 此时代表类对象本身，参数列表的下标从1开始
+                    EmitHelper.Ldind(il, unRefType);
+                    il.Emit(OpCodes.Box, unRefType);
+                }
+                else
+                {
+                    il.Emit(OpCodes.Ldarg_S, i + 1);
+                    il.Emit(OpCodes.Ldind_Ref);
+                }
+
+                il.Emit(OpCodes.Stelem_Ref); //进行数组的赋值操作
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace AopSugar
     /// <summary>
     /// 执入AOP
     /// </summary>
-    public class AopCore
+    public class Initialize
     {
         /// <summary>
         /// 如果存在AOP标记，则开始初始化上下文对象
@@ -20,9 +20,9 @@ namespace AopSugar
         /// <param name="obj_arr"></param>
         /// <param name="method"></param>
         /// <returns></returns>
-        public static LocalBuilder InitializeAspectContext(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr, MethodInfo method)
+        public static LocalBuilder Context(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr, MethodInfo method)
         {
-            obj_arr = InitializeParameterArray(il, paramTypes);
+            obj_arr = ParameterArray(il, paramTypes);
 
             //初始化AspectContext
             Type aspectType = typeof(AspectContext);
@@ -65,7 +65,7 @@ namespace AopSugar
         /// <param name="basicTypes"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static LocalBuilder[] ImplantExecutingBasics(ILGenerator il, Type[] basicTypes, LocalBuilder context)
+        public static LocalBuilder[] ExecutingBasics(ILGenerator il, Type[] basicTypes, LocalBuilder context)
         {
             if (basicTypes == null || basicTypes.Length == 0)
                 return null;
@@ -100,7 +100,7 @@ namespace AopSugar
         /// <param name="authType"></param>
         /// <param name="context"></param>
         /// <param name="lbl"></param>
-        public static void ImplantAuthentication(ILGenerator il, Type authType, LocalBuilder context, ref Label? lbl)
+        public static void Authentication(ILGenerator il, Type authType, LocalBuilder context, ref Label? lbl)
         {
             if (authType == null)
                 return;
@@ -123,7 +123,7 @@ namespace AopSugar
         /// <param name="pis"></param>
         /// <param name="agent"></param>
         /// <param name="members"></param>
-        public static void InitializeMembers(TypeBuilder typeBuilder, Type implementType, PropertyInfo[] pis, ref FieldBuilder agent, ref FieldBuilder[] members)
+        public static void Members(TypeBuilder typeBuilder, Type implementType, PropertyInfo[] pis, ref FieldBuilder agent, ref FieldBuilder[] members)
         {
             //生成内部的私有成员
             agent = typeBuilder.DefineField("m_Agent", implementType, FieldAttributes.Private);
@@ -172,7 +172,7 @@ namespace AopSugar
             il.Emit(OpCodes.Ret);
         }
 
-        public static LocalBuilder InitializeParameterArray(ILGenerator il, Type[] paramTypes)
+        public static LocalBuilder ParameterArray(ILGenerator il, Type[] paramTypes)
         {
             var obj_arr = il.DeclareLocal(typeof(object[])); //声明数组的局部变量
             il.Emit(OpCodes.Ldc_I4, paramTypes.Length); //数组长度入栈
@@ -219,36 +219,7 @@ namespace AopSugar
 
             return obj_arr;
         }
-        public static void AppendParameterRefValues(ILGenerator il, Type[] paramTypes, LocalBuilder obj_arr)
-        {
-            if (obj_arr == null)
-                return;
-
-            for (int i = 0; i < paramTypes.Length; i++)
-            {
-                var paramType = paramTypes[i];
-                if (!paramType.IsByRef) //非ref模式的直接跳过
-                    continue;
-
-                il.Emit(OpCodes.Ldloc, obj_arr); //数组对象入栈
-                il.Emit(OpCodes.Ldc_I4, i); //下标入栈
-
-                Type unRefType = TypeHelper.GetUnRefType(paramType);
-                if (unRefType.IsValueType)
-                {
-                    il.Emit(OpCodes.Ldarg, i + 1); //对应下标的参数值入栈，注：OpCodes.Ldarg_0 此时代表类对象本身，参数列表的下标从1开始
-                    EmitHelper.Ldind(il, unRefType);
-                    il.Emit(OpCodes.Box, unRefType);
-                }
-                else
-                {
-                    il.Emit(OpCodes.Ldarg_S, i + 1);
-                    il.Emit(OpCodes.Ldind_Ref);
-                }
-
-                il.Emit(OpCodes.Stelem_Ref); //进行数组的赋值操作
-            }
-        }
+       
         /// <summary>
         /// 利用成员代理和当前的调用参数，获取真正执行的函数结果
         /// </summary>
