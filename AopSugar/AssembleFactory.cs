@@ -11,9 +11,7 @@ namespace AopSugar
     /// </summary>
     public class AssembleFactory
     {
-        #region fields and properies
-
-
+        #region Fields and properies
         //允许的最大装配深度
         private int m_MaxDepth = 1;
         //动态生成的dll保存到本地的名称（保存的路径就是当前程序运行的bin目录）
@@ -29,6 +27,7 @@ namespace AopSugar
         private Dictionary<string, Func<object>> FUNC_DICTIONARY = new Dictionary<string, Func<object>>();
         #endregion
 
+        #region Instance Register
         public AssembleFactory(int maxDepth)
         {
             if (maxDepth < 1)
@@ -216,7 +215,6 @@ namespace AopSugar
             return AppendProperties(result, bind, depth);
         }
 
-
         private object CreateInstance(string key, bool singleton)
         {
             Func<object> func = null;
@@ -390,6 +388,8 @@ namespace AopSugar
             return false;
         }
 
+        #endregion
+
         private Type CreateAgentTypeByClass(Type bindType)
         {
 
@@ -488,7 +488,6 @@ namespace AopSugar
             return dynamicType;
         }
 
-        #region Helpers
         private void ImplementMethodByClass(TypeBuilder typeBuilder, FieldBuilder agent, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
             var pis = method.GetParameters();
@@ -706,8 +705,6 @@ namespace AopSugar
             return result;
         }
 
-
-
         private void FilterAspect(object[] atts, ref Type[] basicTypes, ref Type authType, ref Type exType)
         {
             if (atts == null || atts.Length == 0)
@@ -726,8 +723,6 @@ namespace AopSugar
 
             if (list.Count > 0) basicTypes = list.ToArray();
         }
-
-
 
         private void DefineParameters(MethodBuilder methodBuilder, ParameterInfo[] pis)
         {
@@ -779,6 +774,5 @@ namespace AopSugar
 
             return string.Format("!!_{0}_{1}", type.FullName, type.Assembly.FullName);
         }
-        #endregion
     }
 }
