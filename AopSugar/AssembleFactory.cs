@@ -407,7 +407,7 @@ namespace AopSugar
             //生成代理+属性的私有成员
             FieldBuilder agent = null;
             FieldBuilder[] members = null;
-            InitializeMembers(typeBuilder, bindType, pis, ref agent, ref members);
+            AopCore.InitializeMembers(typeBuilder, bindType, pis, ref agent, ref members);
 
             //识别AOP标记
             Type exType = null;
@@ -454,7 +454,7 @@ namespace AopSugar
             //生成代理+属性的私有成员
             FieldBuilder agent = null;
             FieldBuilder[] members = null;
-            InitializeMembers(typeBuilder, implementType, pis, ref agent, ref members);
+            AopCore.InitializeMembers(typeBuilder, implementType, pis, ref agent, ref members);
 
             //识别AOP标记
             Type exType = null;
@@ -518,55 +518,6 @@ namespace AopSugar
                 GetAllFatherInterfaces(item, list);
         }
 
-        private void InitializeMembers(TypeBuilder typeBuilder, Type implementType, PropertyInfo[] pis, ref FieldBuilder agent, ref FieldBuilder[] members)
-        {
-            //生成内部的私有成员
-            agent = typeBuilder.DefineField("m_Agent", implementType, FieldAttributes.Private);
-
-            //生成默认的构造函数
-            var cb = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, CallingConventions.Standard, Type.EmptyTypes);
-            var il = cb.GetILGenerator();
-
-            //利用空构造函数实例化m_Agent
-            var info = implementType.GetConstructor(Type.EmptyTypes);
-
-            //加载类本身
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Newobj, info);
-            il.Emit(OpCodes.Stfld, agent);
-
-            int len = pis.Length;
-            members = new FieldBuilder[len];
-
-            //初始化属性的各个成员
-            for (int i = 0; i < len; i++)
-            {
-                var pi = pis[i];
-                var fb = typeBuilder.DefineField(string.Format("m_{0}", pi.Name), pi.PropertyType, FieldAttributes.Private);
-
-                if (pi.PropertyType.IsValueType)
-                {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldflda, fb);
-                    il.Emit(OpCodes.Initobj, pi.PropertyType);
-                }
-                else
-                {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldnull);
-                    il.Emit(OpCodes.Stfld, fb);
-                }
-
-                members[i] = fb;
-            }
-
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
-
-            il.Emit(OpCodes.Nop);
-            il.Emit(OpCodes.Ret);
-        }
-
         #region Helpers
         private void ImplementMethodByClass(TypeBuilder typeBuilder, FieldBuilder agent, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
@@ -616,7 +567,7 @@ namespace AopSugar
             if (lbl.HasValue) il.MarkLabel(lbl.Value);
 
             //对ref参数的值进行重新赋值
-            AppendParameterRefValues(il, paramTypes, obj_arr);
+            AopCore.AppendParameterRefValues(il, paramTypes, obj_arr);
 
             //将本次执行的结果附加到当前的上下文环境中
             AppendContextResult(il, context, result);
@@ -684,7 +635,7 @@ namespace AopSugar
             if (lbl.HasValue) il.MarkLabel(lbl.Value);
 
             //对ref参数的值进行重新赋值
-            AppendParameterRefValues(il, paramTypes, obj_arr);
+            AopCore.AppendParameterRefValues(il, paramTypes, obj_arr);
 
             //将本次执行的结果附加到当前的上下文环境中
             AppendContextResult(il, context, result);
@@ -810,36 +761,7 @@ namespace AopSugar
             il.Emit(OpCodes.Callvirt, method);
         }
 
-        private void AppendParameterRefValues(ILGenerator il, Type[] paramTypes, LocalBuilder obj_arr)
-        {
-            if (obj_arr == null)
-                return;
 
-            for (int i = 0; i < paramTypes.Length; i++)
-            {
-                var paramType = paramTypes[i];
-                if (!paramType.IsByRef) //非ref模式的直接跳过
-                    continue;
-
-                il.Emit(OpCodes.Ldloc, obj_arr); //数组对象入栈
-                il.Emit(OpCodes.Ldc_I4, i); //下标入栈
-
-                Type unRefType = TypeHelper.GetUnRefType(paramType);
-                if (unRefType.IsValueType)
-                {
-                    il.Emit(OpCodes.Ldarg, i + 1); //对应下标的参数值入栈，注：OpCodes.Ldarg_0 此时代表类对象本身，参数列表的下标从1开始
-                    EmitHelper.Ldind(il, unRefType);
-                    il.Emit(OpCodes.Box, unRefType);
-                }
-                else
-                {
-                    il.Emit(OpCodes.Ldarg_S, i + 1);
-                    il.Emit(OpCodes.Ldind_Ref);
-                }
-
-                il.Emit(OpCodes.Stelem_Ref); //进行数组的赋值操作
-            }
-        }
 
 
 
