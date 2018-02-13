@@ -7,20 +7,20 @@ namespace AopSugar
     /// </summary>
     public static class BindExtension
     {
-        public static Tuple<AssembleFactory, Type, string> Bind<T>(this AssembleFactory factory)
+        public static Tuple<AopContainer, Type, string> Bind<T>(this AopContainer factory)
         {
             return factory.Bind<T>(null);
         }
 
-        public static Tuple<AssembleFactory, Type, string> Bind<T>(this AssembleFactory factory, string name)
+        public static Tuple<AopContainer, Type, string> Bind<T>(this AopContainer factory, string name)
         {
             if (factory == null)
                 throw new ArgumentNullException("factory");
 
-            return new Tuple<AssembleFactory, Type, string>(factory, typeof(T), name);
+            return new Tuple<AopContainer, Type, string>(factory, typeof(T), name);
         }
 
-        public static void To(this Tuple<AssembleFactory, Type, string> bind, object element)
+        public static void To(this Tuple<AopContainer, Type, string> bind, object element)
         {
             if (bind == null)
                 throw new ArgumentNullException("bind");
@@ -37,12 +37,12 @@ namespace AopSugar
             bind.Item1.Register(bind.Item3, bind.Item2, element);
         }
 
-        public static void To<T>(this Tuple<AssembleFactory, Type, string> bind)
+        public static void To<T>(this Tuple<AopContainer, Type, string> bind)
         {
             bind.To<T>(false);
         }
 
-        public static void To<T>(this Tuple<AssembleFactory, Type, string> bind, bool singleton)
+        public static void To<T>(this Tuple<AopContainer, Type, string> bind, bool singleton)
         {
             if (bind == null)
                 throw new ArgumentNullException("bind");

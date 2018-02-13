@@ -11,7 +11,7 @@ namespace AopTest
     {
         static void Main(string[] args)
         {
-            var factory = AssembleFactory.Instance;
+            var factory = AopContainer.Instance;
  
             factory.Bind<IUserMamager>().To<UserMamager>();
             var user = factory.CreateInstance<UserMamager>();

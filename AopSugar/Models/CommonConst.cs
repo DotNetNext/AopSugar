@@ -21,7 +21,7 @@ namespace AopSugar
         public static Type ET = typeof(ExceptionAttribute);
         public static Type AT = typeof(AuthenticationAttribute);
 
-        public static AssembleFactory m_Instance = null;
+        public static AopContainer m_Instance = null;
         public static object m_InstanceLocker = new object();
     }
 }

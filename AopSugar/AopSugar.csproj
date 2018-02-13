@@ -42,7 +42,7 @@
     <Compile Include="Attributes\AspectAttribute.cs" />
     <Compile Include="Attributes\AspectContext.cs" />
     <Compile Include="Attributes\AssembleAttribute.cs" />
-    <Compile Include="AssembleFactory.cs" />
+    <Compile Include="AopContainer.cs" />
     <Compile Include="Attributes\AuthenticationAttribute.cs" />
     <Compile Include="Attributes\ActionAttribute.cs" />
     <Compile Include="Helper\MethodHelper.cs" />

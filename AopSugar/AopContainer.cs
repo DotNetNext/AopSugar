@@ -9,7 +9,7 @@ namespace AopSugar
     /// <summary>
     /// 装配工厂
     /// </summary>
-    public class AssembleFactory
+    public class AopContainer
     {
         #region Fields and properies
         //允许的最大装配深度
@@ -28,7 +28,7 @@ namespace AopSugar
         #endregion
 
         #region Instance Register
-        public AssembleFactory(int maxDepth)
+        public AopContainer(int maxDepth)
         {
             if (maxDepth < 1)
                 throw new ArgumentOutOfRangeException("maxDepth不能小于1");
@@ -39,7 +39,7 @@ namespace AopSugar
             InitializeAssemblyModule();
         }
 
-        public static AssembleFactory Instance
+        public static AopContainer Instance
         {
             get
             {
@@ -52,7 +52,7 @@ namespace AopSugar
                         return CommonConst.m_Instance;
 
                     //默认实例的最大装配深度为3（我脑子笨，多于3层我就闹不清楚了^_^）
-                    CommonConst.m_Instance = new AssembleFactory(3);
+                    CommonConst.m_Instance = new AopContainer(3);
                 }
 
                 return CommonConst.m_Instance;
