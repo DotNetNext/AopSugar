@@ -593,24 +593,24 @@ namespace AopSugar
             LocalBuilder obj_arr = null;
 
             //如果存在AOP标记，则开始初始化上下文对象
-            context = InitializeAspect.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
+            context = AopCore.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
 
 
             //开始植入基本（执行前）的AOP代码
-            var basics = ImplantExecutingBasics(il, basicTypes, context);
+            var basics = AopCore.ImplantExecutingBasics(il, basicTypes, context);
 
             //开始植入认证的AOP代码
             Label? lbl = null;
-            ImplantAuthentication(il, authType, context, ref lbl);
+            AopCore.ImplantAuthentication(il, authType, context, ref lbl);
 
             //开始植入异常(try)AOP代码
-            ImplantBeginException(il, exType);
+            EmitHelper.ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
             CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
-            ImplantCatchException(il, exType, context);
+            EmitHelper.ImplantCatchException(il, exType, context);
 
             //如果有标签，则把标签定位到本位置（认证AOP使用）
             if (lbl.HasValue) il.MarkLabel(lbl.Value);
@@ -662,23 +662,23 @@ namespace AopSugar
 
             //如果存在AOP标记，则开始初始化上下文对象
             if (basicTypes != null || authType != null || exType != null)
-                context = InitializeAspect.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
+                context = AopCore.InitializeAspectContext(il, paramTypes, ref obj_arr, method);
 
             //开始植入基本（执行前）的AOP代码
-            var basics = ImplantExecutingBasics(il, basicTypes, context);
+            var basics = AopCore.ImplantExecutingBasics(il, basicTypes, context);
 
             //开始植入认证的AOP代码
             Label? lbl = null;
-            ImplantAuthentication(il, authType, context, ref lbl);
+            AopCore.ImplantAuthentication(il, authType, context, ref lbl);
 
             //开始植入异常(try)AOP代码
-            ImplantBeginException(il, exType);
+            EmitHelper.ImplantBeginException(il, exType);
 
             //利用成员代理和当前的调用参数，获取真正执行的函数结果
             CallResult(il, agent, method, pis, paramTypes, result, is_void);
 
             //开始植入异常(catch)AOP代码
-            ImplantCatchException(il, exType, context);
+            EmitHelper.ImplantCatchException(il, exType, context);
 
             //如果有标签，则把标签定位到本位置（认证AOP使用）
             if (lbl.HasValue) il.MarkLabel(lbl.Value);
@@ -785,39 +785,7 @@ namespace AopSugar
             return result;
         }
 
-        private void ImplantBeginException(ILGenerator il, Type exType)
-        {
-            if (exType == null)
-                return;
 
-            il.BeginExceptionBlock();
-        }
-
-        private void ImplantCatchException(ILGenerator il, Type exType, LocalBuilder context)
-        {
-            if (exType == null)
-                return;
-
-            Type type = typeof(Exception);
-            var ex = il.DeclareLocal(type);
-
-            il.BeginCatchBlock(type);
-
-            //进入catch块后，此时的栈顶就是Exception对象
-            il.Emit(OpCodes.Castclass, type);
-            il.Emit(OpCodes.Stloc, ex);
-
-            ConstructorInfo info = exType.GetConstructor(Type.EmptyTypes);
-            il.Emit(OpCodes.Newobj, info);
-
-            var method = exType.GetMethod("OnException");
-
-            il.Emit(OpCodes.Ldloc, context);
-            il.Emit(OpCodes.Ldloc, ex);
-            il.Emit(OpCodes.Callvirt, method);
-
-            il.EndExceptionBlock();
-        }
 
         private void AppendContextResult(ILGenerator il, LocalBuilder context, LocalBuilder result)
         {
@@ -873,50 +841,8 @@ namespace AopSugar
             }
         }
 
-        private void ImplantAuthentication(ILGenerator il, Type authType, LocalBuilder context, ref Label? lbl)
-        {
-            if (authType == null)
-                return;
 
-            lbl = il.DefineLabel();
-            var method = authType.GetMethod("OnAuthentication");
 
-            ConstructorInfo info = authType.GetConstructor(Type.EmptyTypes);
-            il.Emit(OpCodes.Newobj, info);
-            il.Emit(OpCodes.Ldloc, context);
-            il.Emit(OpCodes.Callvirt, method);
-
-            il.Emit(OpCodes.Brfalse, lbl.Value);
-        }
-
-        private LocalBuilder[] ImplantExecutingBasics(ILGenerator il, Type[] basicTypes, LocalBuilder context)
-        {
-            if (basicTypes == null || basicTypes.Length == 0)
-                return null;
-
-            int len = basicTypes.Length;
-            LocalBuilder[] array = new LocalBuilder[len];
-
-            for (int i = 0; i < len; i++)
-            {
-                var type = basicTypes[i];
-                var basic = il.DeclareLocal(type);
-                ConstructorInfo info = type.GetConstructor(Type.EmptyTypes);
-
-                il.Emit(OpCodes.Newobj, info);
-                il.Emit(OpCodes.Stloc, basic);
-
-                var method = type.GetMethod("OnExecuting");
-
-                il.Emit(OpCodes.Ldloc, basic);
-                il.Emit(OpCodes.Ldloc, context);
-                il.Emit(OpCodes.Callvirt, method);
-
-                array[i] = basic;
-            }
-
-            return array;
-        }
 
         private void ImplantExecutedBasics(ILGenerator il, LocalBuilder[] basics, Type[] basicTypes, LocalBuilder context)
         {

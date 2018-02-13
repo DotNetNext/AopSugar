@@ -111,7 +111,7 @@ namespace AopSugar
                 il.Emit(OpCodes.Ldc_I4, value);
         }
 
-        private static Type GetClassTypeByProperty(PropertyInfo[] infos)
+        public static Type GetClassTypeByProperty(PropertyInfo[] infos)
         {
             if (infos == null || infos.Length <= 0)
                 throw new ArgumentNullException("infos");
@@ -119,6 +119,39 @@ namespace AopSugar
             return infos[0].ReflectedType;
         }
 
+        public static void ImplantBeginException(ILGenerator il, Type exType)
+        {
+            if (exType == null)
+                return;
+
+            il.BeginExceptionBlock();
+        }
+
+        public static void ImplantCatchException(ILGenerator il, Type exType, LocalBuilder context)
+        {
+            if (exType == null)
+                return;
+
+            Type type = typeof(Exception);
+            var ex = il.DeclareLocal(type);
+
+            il.BeginCatchBlock(type);
+
+            //进入catch块后，此时的栈顶就是Exception对象
+            il.Emit(OpCodes.Castclass, type);
+            il.Emit(OpCodes.Stloc, ex);
+
+            ConstructorInfo info = exType.GetConstructor(Type.EmptyTypes);
+            il.Emit(OpCodes.Newobj, info);
+
+            var method = exType.GetMethod("OnException");
+
+            il.Emit(OpCodes.Ldloc, context);
+            il.Emit(OpCodes.Ldloc, ex);
+            il.Emit(OpCodes.Callvirt, method);
+
+            il.EndExceptionBlock();
+        }
 
         public static void Ldind(ILGenerator il, Type type)
         {

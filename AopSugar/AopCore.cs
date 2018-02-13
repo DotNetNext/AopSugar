@@ -7,8 +7,19 @@ using System.Text;
 
 namespace AopSugar
 {
-    public class InitializeAspect
+    /// <summary>
+    /// 执入AOP
+    /// </summary>
+    public class AopCore
     {
+        /// <summary>
+        /// 如果存在AOP标记，则开始初始化上下文对象
+        /// </summary>
+        /// <param name="il"></param>
+        /// <param name="paramTypes"></param>
+        /// <param name="obj_arr"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
         public static LocalBuilder InitializeAspectContext(ILGenerator il, Type[] paramTypes, ref LocalBuilder obj_arr, MethodInfo method)
         {
             obj_arr = InitializeParameterArray(il, paramTypes);
@@ -47,7 +58,63 @@ namespace AopSugar
             il.Emit(OpCodes.Nop);
             return context;
         }
+        /// <summary>
+        /// 开始植入基本（执行前）的AOP代码
+        /// </summary>
+        /// <param name="il"></param>
+        /// <param name="basicTypes"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static LocalBuilder[] ImplantExecutingBasics(ILGenerator il, Type[] basicTypes, LocalBuilder context)
+        {
+            if (basicTypes == null || basicTypes.Length == 0)
+                return null;
 
+            int len = basicTypes.Length;
+            LocalBuilder[] array = new LocalBuilder[len];
+
+            for (int i = 0; i < len; i++)
+            {
+                var type = basicTypes[i];
+                var basic = il.DeclareLocal(type);
+                ConstructorInfo info = type.GetConstructor(Type.EmptyTypes);
+
+                il.Emit(OpCodes.Newobj, info);
+                il.Emit(OpCodes.Stloc, basic);
+
+                var method = type.GetMethod("OnExecuting");
+
+                il.Emit(OpCodes.Ldloc, basic);
+                il.Emit(OpCodes.Ldloc, context);
+                il.Emit(OpCodes.Callvirt, method);
+
+                array[i] = basic;
+            }
+
+            return array;
+        }
+        /// <summary>
+        /// 开始植入认证的AOP代码
+        /// </summary>
+        /// <param name="il"></param>
+        /// <param name="authType"></param>
+        /// <param name="context"></param>
+        /// <param name="lbl"></param>
+        public static void ImplantAuthentication(ILGenerator il, Type authType, LocalBuilder context, ref Label? lbl)
+        {
+            if (authType == null)
+                return;
+
+            lbl = il.DefineLabel();
+            var method = authType.GetMethod("OnAuthentication");
+
+            ConstructorInfo info = authType.GetConstructor(Type.EmptyTypes);
+            il.Emit(OpCodes.Newobj, info);
+            il.Emit(OpCodes.Ldloc, context);
+            il.Emit(OpCodes.Callvirt, method);
+
+            il.Emit(OpCodes.Brfalse, lbl.Value);
+        }
 
         public static LocalBuilder InitializeParameterArray(ILGenerator il, Type[] paramTypes)
         {
