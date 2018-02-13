@@ -566,25 +566,14 @@ namespace AopSugar
             il.Emit(OpCodes.Nop);
             il.Emit(OpCodes.Ret);
         }
-        private static Type[] GetParameterTypes(MethodInfo method)
-        {
-            var paramInfos = method.GetParameters();
-            int len = paramInfos.Length;
-            Type[] paramTypes = new Type[len];
-            for (int i = 0; i < len; i++)
-                paramTypes[i] = paramInfos[i].ParameterType;
-
-            return paramTypes;
-        }
-
 
         #region Helpers
         private void ImplementMethodByClass(TypeBuilder typeBuilder, FieldBuilder agent, MethodInfo method, Type[] basicTypes, Type authType, Type exType)
         {
             var pis = method.GetParameters();
-            if (!method.IsPublic || !method.IsVirtual || IsObjectMethod(method)) return;
+            if (!method.IsPublic || !method.IsVirtual || MethodHelper.IsObjectMethod(method)) return;
 
-            Type[] paramTypes = GetParameterTypes(method);
+            Type[] paramTypes = MethodHelper.GetParameterTypes(method);
             MethodAttributes attr = MethodAttributes.Public | MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.Virtual;
             MethodBuilder mb = typeBuilder.DefineMethod(method.Name, attr, method.ReturnType, paramTypes);
 
@@ -1140,11 +1129,7 @@ namespace AopSugar
 
             return string.Format("!!_{0}_{1}", type.FullName, type.Assembly.FullName);
         }
-        private bool IsObjectMethod(MethodInfo method)
-        {
-            string[] arr = new string[] { "ToString", "GetType", "GetHashCode", "Equals" };
-            return arr.Contains(method.Name);
-        } 
+   
         #endregion
     }
 }

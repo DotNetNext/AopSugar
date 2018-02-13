@@ -45,10 +45,11 @@
     <Compile Include="AssembleFactory.cs" />
     <Compile Include="Attributes\AuthenticationAttribute.cs" />
     <Compile Include="Attributes\ActionAttribute.cs" />
+    <Compile Include="Helper\MethodHelper.cs" />
     <Compile Include="Models\CommonConst.cs" />
     <Compile Include="Models\BindElement.cs" />
     <Compile Include="BindExtension.cs" />
-    <Compile Include="EmitHelper.cs" />
+    <Compile Include="Helper\EmitHelper.cs" />
     <Compile Include="Attributes\ExceptionAttribute.cs" />
     <Compile Include="Models\PropertiesAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
