@@ -33,5 +33,10 @@ namespace AopSugar
         {
             return obj.GetType().GetMethod(name).GetCustomAttributes(true);
         }
+
+        public static ParameterInfo[] GetParameterNames(object obj, string name) {
+
+            return obj.GetType().GetMethod(name).GetParameters();
+        }
     }
 }

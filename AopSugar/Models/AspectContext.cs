@@ -16,7 +16,7 @@ namespace AopSugar
         /// <summary>
         /// 参数名称集合
         /// </summary>
-        public string[] ArgNames { get; set; }
+        public ParameterInfo[] ParameterInfos { get; set; }
         /// <summary>
         /// 参数明细
         /// </summary>
@@ -27,10 +27,10 @@ namespace AopSugar
                 if (_ArgDetails == null)
                 {
                     _ArgDetails = new Dictionary<string, object>();
-                    if (Args != null && ArgNames != null && Args.Length == ArgNames.Length) {
+                    if (Args != null && ParameterInfos != null && Args.Length == ParameterInfos.Length) {
                         for (int i = 0; i < Args.Length; i++)
                         {
-                            _ArgDetails.Add(ArgNames[i],Args[i]);
+                            _ArgDetails.Add(ParameterInfos[i].Name,Args[i]);
                         }
                     }
                 }

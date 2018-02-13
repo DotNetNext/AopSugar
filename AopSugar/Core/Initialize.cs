@@ -78,6 +78,17 @@ namespace AopSugar
             il.Emit(OpCodes.Call, setAttrsMethod);
             il.Emit(OpCodes.Nop);
 
+
+            var setArgNamesMethod = aspectType.GetMethod("set_ParameterInfos");
+            var getArgNamesType = typeof(MethodHelper).GetMethod("GetParameterNames");
+            il.Emit(OpCodes.Ldloc, context);
+            il.Emit(OpCodes.Ldarg_0); //加载类本身
+            il.Emit(OpCodes.Ldfld, agent); //加载代理成员
+            il.Emit(OpCodes.Ldstr, method.Name);
+            il.Emit(OpCodes.Call, getArgNamesType);
+            il.Emit(OpCodes.Call, setArgNamesMethod);
+            il.Emit(OpCodes.Nop);
+
             return context;
         }
         /// <summary>
