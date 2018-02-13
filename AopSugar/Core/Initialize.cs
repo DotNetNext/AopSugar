@@ -8,7 +8,7 @@ using System.Text;
 namespace AopSugar
 {
     /// <summary>
-    /// 执入AOP
+    /// 植入AOP
     /// </summary>
     public class Initialize
     {
