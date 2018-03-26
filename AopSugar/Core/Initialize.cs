@@ -63,6 +63,8 @@ namespace AopSugar
             il.Emit(OpCodes.Ldarg_0); //加载类本身
             il.Emit(OpCodes.Ldfld, agent); //加载代理成员
             il.Emit(OpCodes.Ldstr, method.Name);
+            il.Emit(OpCodes.Ldloc, obj_arr); //加载代理成员
+
             il.Emit(OpCodes.Call, getMethodType);
             il.Emit(OpCodes.Call, setMethodInfoMethod);
             il.Emit(OpCodes.Nop);
@@ -74,6 +76,8 @@ namespace AopSugar
             il.Emit(OpCodes.Ldarg_0); //加载类本身
             il.Emit(OpCodes.Ldfld, agent); //加载代理成员
             il.Emit(OpCodes.Ldstr, method.Name);
+            il.Emit(OpCodes.Ldloc, obj_arr); //加载代理成员
+            
             il.Emit(OpCodes.Call, getCusAttributesType);
             il.Emit(OpCodes.Call, setAttrsMethod);
             il.Emit(OpCodes.Nop);
@@ -85,6 +89,9 @@ namespace AopSugar
             il.Emit(OpCodes.Ldarg_0); //加载类本身
             il.Emit(OpCodes.Ldfld, agent); //加载代理成员
             il.Emit(OpCodes.Ldstr, method.Name);
+            il.Emit(OpCodes.Ldloc, obj_arr); //加载代理成员
+
+
             il.Emit(OpCodes.Call, getArgNamesType);
             il.Emit(OpCodes.Call, setArgNamesMethod);
             il.Emit(OpCodes.Nop);

@@ -24,19 +24,31 @@ namespace AopSugar
             return paramTypes;
         }
 
-        public static MethodInfo GetMethod(object obj, string name)
+        public static MethodInfo GetMethod(object obj, string name,object [] args)
         {
-            return obj.GetType().GetMethod(name);
+            var methods= obj.GetType().GetMethods().Where(it=>it.Name==name&&it.IsVirtual==true);
+            if (methods.Count() == 1) return methods.First();
+            MethodInfo result = null;
+            foreach (var item in methods)
+            {
+                var itemArgsTypes =string.Join(",", item.GetParameters().Select(it=>it.ParameterType.Name).ToArray());
+                var argsTypes = string.Join(",", args.Select(it => it.GetType().Name).ToArray());
+                if (argsTypes == itemArgsTypes) {
+                    result = item;
+                    break; 
+                }
+            }
+            return result;
         }
 
-        public static object[] GetCustomAttributes(object obj, string name)
+        public static object[] GetCustomAttributes(object obj, string name, object[] args)
         {
-            return obj.GetType().GetMethod(name).GetCustomAttributes(true);
+            return GetMethod(obj,name,args).GetCustomAttributes(true);
         }
 
-        public static ParameterInfo[] GetParameterNames(object obj, string name) {
+        public static ParameterInfo[] GetParameterNames(object obj, string name, object[] args) {
 
-            return obj.GetType().GetMethod(name).GetParameters();
+            return GetMethod(obj, name, args).GetParameters();
         }
     }
 }
